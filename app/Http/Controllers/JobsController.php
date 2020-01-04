@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Job;
 use App\User;
+use http\Env\Response;
 use Illuminate\Http\Request;
 
 class JobsController extends Controller
@@ -57,17 +58,19 @@ class JobsController extends Controller
         $user = User::where('name', $request->username)->first();
 
         if ($user->job) {
-            return response("شما قبلا درخواست خود را ارسال کرده اید", 400);
-        } else
-
+            return response("شما قبلا درخواست خود را ارسال کرده اید", 200);
+        } else if ($job->available >= 1) {
 
             $job->update(['available' => $job->available - 1]);
             $user->update(['job' => $request->id]);
+            $user->save();
 
-        return response()->json([
-            'remainder' => $job->available, 201
-        ]);
+            return response()->json([
+                'msg' => 'ثبت شد',
+                'jobId' => $job->id,
+                'remainder' => $job->available,
+            ], 201);
+        } else return response("ظرفیت تمام شده است!", 202);
 
     }
-
 }
