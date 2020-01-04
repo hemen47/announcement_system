@@ -15,3 +15,6 @@ use Illuminate\Http\Request;
 
 
 Route::get('jobs', 'JobsController@index');
+Route::post('login', 'JobsController@login');
+Route::post('panel', 'JobsController@save');
+Route::post('reserve', 'JobsController@reserve');
